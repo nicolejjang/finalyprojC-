@@ -1,0 +1,484 @@
+#include<iostream>
+#include <string>
+#include<opencv2/imgcodecs.hpp>
+#include<opencv2/highgui.hpp>
+#include<fstream>
+#include "Data.h"
+
+using namespace std;
+
+VideoData::VideoData()
+{
+}
+
+VideoData::~VideoData()
+{
+}
+
+void VideoData::newVid(std::string title, std::string genre, std::string prod, std::string noc, std::string jpg)
+{
+	system("CLS");
+	cout << "---NEW VIDEO---" << endl;
+	VidNode* newVideo = new VidNode();
+	newVideo->video_id = id;
+	newVideo->video_title = title;
+	newVideo->video_genre = genre;
+	newVideo->video_producer = prod;
+	newVideo->video_copies = noc;
+	newVideo->video_location = jpg;
+	videoList.push_back(*newVideo);
+	id++;
+}
+
+bool VideoData::showVid(int id)
+{
+	system("CLS");
+	cout << "---SHOW VIDEO DETAILS---" << endl;
+	bool search = false;
+	if (videoList.empty())
+	{
+		cout << "There are no movies to rent.";
+	}
+	else
+	{
+
+		for (auto video : videoList) {
+			if (video.video_id == id) {
+				try {
+					cout << "Movie Title: " << video.video_title << endl;
+					cout << "Genre: " << video.video_genre << endl;
+					cout << "Production: " << video.video_producer << endl;
+					cout << "Number of Copies: " << video.video_copies << endl;
+					cout << "Movie Filename: " << video.video_location << endl;
+
+
+					cv::Mat dont = cv::imread(video.video_location);
+					cv::imshow("", dont);
+					cv::waitKey(0);
+				}
+				catch (exception e) {
+					cout << " filename does not exist. " << e.what() << endl;
+				}
+				search = true;
+				break;
+
+			}
+		}
+		if (!search) {
+			cout << "Video ID does not exist." << endl;
+		}
+	}
+	cout << endl;
+	return search;
+}
+
+bool VideoData::checkVid(int id)
+{
+	system("CLS");
+	cout << "---CHECK VIDEO AVAILABILITY---" << endl;
+	bool search = false;
+	if (videoList.empty())
+	{
+		cout << "Movie with that code does not exists." << endl;
+	}
+	else
+	{
+		for (auto& video : videoList) {
+			if (video.video_id == id) {
+				cout << "Movie Title: " << video.video_title << endl;
+				cout << "Genre: " << video.video_genre << endl;
+				cout << "Production: " << video.video_producer << endl;
+				cout << "Number of Copies: " << video.video_copies << endl;
+				if (video.video_copies != "0") {
+					cout << "Availability: Available" << endl;
+				}
+				else {
+					cout << "Availability: Not Available" << endl;
+				}
+				search = true;
+				break;
+			}
+		}
+		if (!search) {
+			cout << "Video ID does not exist." << endl;
+		}
+	}
+	cout << endl;
+	return search;
+}
+
+
+void VideoData::dispVid()
+{
+	system("CLS");
+	cout << "DISPLAYING ALL VIDEOS\n";
+
+	/*
+	MOVIES
+
+	VIDEO ID : 1
+	MOVIE TITLE: DON'T BREATHE
+	GENRE: HORROR
+	PRODUCTION: GHOST HOUSE PICTURES
+	IMAGE:
+
+	VIDEO ID : 2
+	MOVIE TITLE: FRIDAY THE 13TH
+	GENRE: HORROR
+	PRODUCTION: PARAMOUNT
+	IMAGE:
+
+	VIDEO ID : 3
+	MOVIE TITLE: SAW
+	GENRE: HORROR
+	PRODUCTION: LIONSGATE
+	IMAGE:
+
+	VIDEO ID : 4
+	MOVIE TITLE: The Orphanage
+	GENRE: HORROR
+	PRODUCTION:Warner Bros
+	IMAGE:
+
+	VIDEO ID : 5
+	MOVIE TITLE:The Babadook
+	GENRE: HORROR
+	PRODUCTION:Entertainment One
+	IMAGE:
+	5 ROMANCE MOVIES
+
+	VIDEO ID : 6
+	MOVIE TITLE:The Photograph
+	GENRE: ROMANCE
+	PRODUCTION:UNIVERSAL
+	IMAGE:
+
+	VIDEO ID : 7
+	MOVIE TITLE:Portrait of a Lady on Fire
+	GENRE: ROMANCE
+	PRODUCTION:NEON
+	IMAGE:
+
+	VIDEO ID : 8
+	MOVIE TITLE:A Star Is Born
+	GENRE: ROMANCE
+	PRODUCTION:WARNER BROS
+	IMAGE:
+
+	VIDEO ID : 9
+	MOVIE TITLE:If Beale Street Could Talk
+	GENRE: ROMANCE
+	PRODUCTION:ANNAPURNA
+	IMAGE:
+
+	VIDEO ID : 10
+	MOVIE TITLE:Moulin Rouge
+	GENRE: ROMANCE
+	PRODUCTION:20TH CENTURY FOX
+	IMAGE:
+	SCI- FI MOVIES
+
+	VIDEO ID : 11
+	MOVIE TITLE: AVENGERS:ENDGAME
+	GENRE: SCI-FI
+	PRODUCTION: MARVEL STUDIOS
+	IMAGE:
+
+	VIDEO ID : 12
+	MOVIE TITLE: CAPTAIN MARVEL
+	GENRE: SCI-FI
+	PRODUCTION: MARVEL STUDIOS
+	IMAGE:
+
+	VIDEO ID : 13
+	MOVIE TITLE: GODZILLA: KING OF THE MONSTERS
+	GENRE: SCI-FI
+	PRODUCTION: LEGENDARY PICTURES
+	IMAGE:
+
+	VIDEO ID : 14
+	MOVIE TITLE: ALITA:BATTLE ANGEL
+	GENRE: SCI-FI
+	PRODUCTION:20TH CENTURY FOX
+	IMAGE:
+
+	VIDEO ID : 15
+	MOVIE TITLE: STARWARS: THE RISE OF SKYWALKER
+	GENRE: SCI-FI
+	PRODUCTION: WALT DISNEY STUDIOS
+	IMAGE:
+	ACTION MOVIES
+
+	VIDEO ID : 16
+	MOVIE TITLE: JUMANJI: THE NEXT LEVEL
+	GENRE: ACTION
+	PRODUCTION: SONY PICTURES
+	IMAGE:
+
+	VIDEO ID : 17
+	MOVIE TITLE: EXTRACTION
+	GENRE: ACTION
+	PRODUCTION: NETFLIX
+	IMAGE:
+
+	VIDEO ID : 18
+	MOVIE TITLE: VENOM
+	GENRE: ACTION
+	PRODUCTION: SONY PICTURES
+	IMAGE:
+
+	VIDEO ID : 19
+	MOVIE TITLE:  AQUAMAN
+	GENRE: ACTION
+	PRODUCTION: WARNER BROS.
+	IMAGE:
+
+	VIDEO ID : 20
+	MOVIE TITLE:  JURASSIC WORLD : FALLEN KINGDOM
+	GENRE: ACTION
+	PRODUCTION: UNIVERSAL PICTURES
+	IMAGE:
+	COMEDY MOVIES
+
+	VIDEO ID : 21
+	MOVIE TITLE:Shazam!
+	GENRE: COMEDY
+	PRODUCTION:Warner Bros
+	IMAGE:
+
+	VIDEO ID : 22
+	MOVIE TITLE:Booksmart
+	GENRE: COMEDY
+	PRODUCTION:Annapurna
+	IMAGE:
+
+	VIDEO ID : 23
+	MOVIE TITLE:The LEGO Movie 2: The Second Part
+	GENRE: COMEDY
+	PRODUCTION:Warner Bros
+	IMAGE:
+
+	VIDEO ID : 24
+	MOVIE TITLE:The Dead Don't Die
+	GENRE: COMEDY
+	PRODUCTION:Focus Features
+	IMAGE:
+
+	VIDEO ID : 25
+	MOVIE TITLE:Long Shot
+	GENRE: COMEDY
+	PRODUCTION:Lionsgate*/
+	//sci-fi
+
+	system("CLS");
+
+	if (videoList.empty())
+	{
+		cout << "No information available." << endl;
+	}
+	else
+	{
+		for (auto video : videoList) {
+			cout << " ------------------------------------------------- \n";
+			cout << "VIDEO ID: " << video.video_id << endl;
+			cout << "Movie Title: " << video.video_title << endl;
+			cout << "Genre: " << video.video_genre << endl;
+			cout << "Production: " << video.video_producer << endl;
+			cout << "Number of copies: " << video.video_copies << endl;
+			cout << endl;
+		}
+	}
+}
+
+CustomerData::CustomerData() {
+}
+
+CustomerData::~CustomerData() {
+};
+
+void CustomerData::add_customer(string name, string address) {
+	Customer* newCustomer = new Customer();
+	newCustomer->customer_id = id;
+	newCustomer->customer_name = name;
+	newCustomer->customer_address = address;
+	customerList.push_back(*newCustomer);
+	id++;
+}
+
+bool CustomerData::show_customer_details(int id) {
+	bool found = false;
+	for (auto& customer : customerList) {
+		if (customer.customer_id == id) {
+			cout << "Name: " << customer.customer_name << endl;
+			cout << "Address: " << customer.customer_address << endl;
+			found = true;
+			break;
+		}
+	}
+	cout << endl;
+	return found;
+}
+
+void CustomerData::print_customers() {
+	if (!customerList.empty()) {
+		cout << "No customers in database." << endl;
+	}
+	else {
+		for (auto& customer : customerList) {
+			cout << "Customer ID: " << customer.customer_id << endl;
+			cout << "Name: " << customer.customer_name << endl;
+			cout << "Address: " << customer.customer_address << endl;
+			cout << endl;
+		}
+	}
+}
+
+CustomerRentData::CustomerRentData() {
+}
+
+CustomerRentData::~CustomerRentData() {
+};
+
+void CustomerRentData::rent_video(int customer_id, int video_id) {
+	CustomerRent* newRent = new CustomerRent();
+	bool available = false;
+	for (auto& video : videoList) {
+		if (video.video_id == video_id && stoi(video.video_copies) > 0) {
+			newRent->customer_id = customer_id;
+			newRent->video_id = video.video_id;
+			newRent->video_title = video.video_title;
+			newRent->video_genre = video.video_genre;
+			newRent->video_producer = video.video_producer;
+			newRent->video_location = video.video_location;
+			video.video_copies = to_string(stoi(video.video_copies) - 1);
+			available = true;
+			cout << "Rented Successfully." << endl;
+		}
+	}
+	if (!available) {
+		cout << "The video is not available" << endl;
+	}
+	rentList.push_back(*newRent);
+}
+
+void CustomerRentData::return_video(int customer_id, int video_id) {
+	bool found = false;
+	list<CustomerRent>::iterator it = rentList.begin();
+	int increment = 0;
+	for (auto& rent : rentList) {
+		increment++;
+		if (rent.video_id == video_id && rent.customer_id == customer_id) {
+			rentList.erase(it);
+			found = true;
+			break;
+		}
+		
+	}
+
+	if (!found) {
+		cout << "Customer has not rented the video." << endl;
+	}
+	else {
+		found = false;
+		for (auto& video : videoList) {
+			if (video.video_id == video_id) {
+				video.video_copies = to_string(stoi(video.video_copies) + 1);
+				found = true;
+				cout << "Return Successfully." << endl;
+			}
+
+		}
+		if (!found) {
+			cout << "Video does not exist in video list." << endl;
+		}
+
+	}
+}
+
+
+void CustomerRentData::print_rented_details(int id) {
+	if (rentList.empty()) {
+		cout << "This customer has not rented any videos." << endl;
+	}
+	else {
+		for (auto rent : rentList) {
+			if (rent.customer_id == id) {
+				cout << "Video ID" << " " << "Movie Title" << endl;
+				cout << rent.video_id << " " << rent.video_title << endl;
+			}
+		}
+	}
+	cout << endl;
+}
+
+void CustomerRentData::save_data() {
+	ofstream saveFile("C:\\Users\\nicol\\AppData\\Roaming\\customer.txt");
+	for (auto& customer : customerList) {
+		saveFile << customer.customer_id << endl;
+		saveFile << customer.customer_name << endl;
+		saveFile << customer.customer_address << endl;
+	}
+	saveFile.close();
+	
+	ofstream saveFile1("C:\\Users\\nicol\\AppData\\Roaming\\video.txt");
+	for (auto& video : videoList) {
+		saveFile1 << video.video_id << endl;
+		saveFile1 << video.video_title << endl;
+		saveFile1 << video.video_genre << endl;
+		saveFile1 << video.video_producer << endl;
+		saveFile1 << video.video_copies << endl;
+		saveFile1 << video.video_location << endl;
+	}
+	saveFile1.close();
+
+	ofstream saveFile2("C:\\Users\\nicol\\AppData\\Roaming\\rent.txt");
+	for (auto& rent : rentList) {
+		saveFile2 << rent.customer_id << endl;
+		saveFile2 << rent.video_id << endl;
+		saveFile2 << rent.video_title << endl;
+		saveFile2 << rent.video_genre << endl;
+		saveFile2 << rent.video_producer << endl;
+		saveFile2 << rent.video_location << endl;
+	}
+	saveFile2.close();
+}
+
+
+void CustomerRentData::load_data() {
+	CustomerRent* rent = new CustomerRent;
+	int cid, vid;
+	string temp;
+	string name;
+	string address;
+	string title, genre, producer, copies, location;
+	ifstream loadFile("C:\\Users\\nicol\\AppData\\Roaming\\customer.txt");
+	while (getline(loadFile, temp)) {
+		getline(loadFile, name);
+		getline(loadFile, address);
+		add_customer(name, address);
+	}
+	loadFile.close();
+
+	ifstream loadFile1("C:\\Users\\nicol\\AppData\\Roaming\\video.txt");
+	while (getline(loadFile1, temp)) {
+		getline(loadFile1, title);
+		getline(loadFile1, genre);
+		getline(loadFile1, producer);
+		getline(loadFile1, copies);
+		getline(loadFile1, location);
+		newVid(title, genre, producer, copies, location);
+	}
+	loadFile1.close();
+
+	ifstream loadFile2("C:\\Users\\nicol\\AppData\\Roaming\\rent.txt");
+	while (loadFile2 >> rent->customer_id) {
+		loadFile2 >> rent->video_id;
+		getline(loadFile2, temp);
+		getline(loadFile2, rent->video_title);
+		getline(loadFile2, rent->video_genre);
+		getline(loadFile2, rent->video_producer);
+		getline(loadFile2, rent->video_location);
+		rentList.push_back(*rent);
+	}
+	loadFile2.close();
+}

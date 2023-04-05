@@ -1,0 +1,204 @@
+#include<iostream>
+#include<string>
+#include<limits>
+
+#include "Data.h"
+using namespace std;
+
+void addVideo(CustomerRentData *rentals);
+void addCustomer(CustomerRentData *rentals);
+
+int main()
+{
+	/*int id;
+	int video_id;
+	int choice;
+	string video_title, video_genre, video_producer, video_copies, video_location;*/
+	CustomerRentData rentals;
+	rentals.load_data();
+	int customer_id;
+	char enter;
+	int video_id;
+	char choice;
+	bool ended = false;
+	while (!ended)
+	{
+		cout << "WELCOME TO THE STORE" << endl<<endl;
+		cout <<"- [1]New Video" << endl
+			<< "- [2]Rent a Video" << endl
+			<< "- [3]Return a Video" << endl
+			<< "- [4]Show Video Details" << endl
+			<< "- [5]Display All Videos" << endl
+			<< "- [6]Check Video Availability" << endl
+			<< "- [7]Customer Maintenance" << endl
+			<< "- [8]Exit Program" << endl;
+		cout << "\nEnter your choice: ";
+		cin >> choice;
+		switch (choice)
+		{
+		case '1':
+			cin.ignore(100, '\n');
+			system("cls");
+			addVideo(&rentals);
+			break;
+		case '2':
+			do {
+				cin.clear();		
+				cin.ignore(256,'\n');
+				cout << "Customer ID: ";
+				cin >> customer_id;	
+			} while(cin.fail());
+			
+			if (rentals.show_customer_details(customer_id)) {
+				do {
+					do {
+						cin.clear();		
+						cin.ignore(256,'\n');
+						cout << "Video ID: ";
+						cin >> video_id;	
+					} while(cin.fail());
+					if (rentals.checkVid(video_id)) {
+						rentals.rent_video(customer_id, video_id);
+					}
+					else {
+						cout << "Video ID not found." << endl;
+					}
+					cout << "Rent another Video? ";
+					cin >> choice;
+				} 				while (toupper(choice) == 'Y');
+			}
+			else {
+				cout << "Customer ID  not found." << endl;
+			}
+			break;
+		case '3':
+			do {
+				cin.clear();		
+				cin.ignore(256,'\n');
+				cout << "Customer ID: ";
+				cin >> customer_id;	
+			} while(cin.fail());
+			if (rentals.show_customer_details(customer_id)) {
+				do {
+					do {
+						cin.clear();		
+						cin.ignore(256,'\n');
+						cout << "Video ID: ";
+						cin >> video_id;	
+					} while(cin.fail());
+					rentals.return_video(customer_id, video_id);
+					cout << "Return another Video? ";
+					cin >> choice;
+				} 				while (toupper(choice) == 'Y');
+			}
+			else {
+				cout << "Customer ID not found." << endl;
+			}
+			break;
+		case '4':
+			system("CLS");	
+			do {
+				cin.clear();		
+				cin.ignore(256,'\n');
+				cout << "Video ID: ";
+				cin >> video_id;	
+			} while(cin.fail());
+			rentals.showVid(video_id);
+			break;
+		case '5':
+			system("CLS");
+			rentals.dispVid();
+			break;
+		case '6':
+			system("CLS");
+			do {
+				cin.clear();		
+				cin.ignore(256,'\n');
+				cout << "Video ID: ";
+				cin >> video_id;	
+			} while(cin.fail());
+			rentals.checkVid(video_id);
+			break;
+		case '7':
+			system("CLS");
+			cout << "[1] Add New Customer" << endl
+				<< "[2] Show Customer Details" << endl
+				<< "[3] List of Videos Rented by a Customer" << endl
+				<< "\nEnter Your Choice: ";
+			cin >> enter;
+			switch (enter) {
+				case '1':
+					cin.ignore(100, '\n');
+					addCustomer(&rentals);
+					break;
+				case '2':
+					do {
+						cin.clear();		
+						cin.ignore(256,'\n');
+						cout << "Customer ID: ";
+						cin >> customer_id;	
+					} while(cin.fail());
+					rentals.show_customer_details(customer_id);
+					break;
+				case '3':
+					do {
+						cin.clear();		
+						cin.ignore(256,'\n');
+						cout << "Customer ID: ";
+						cin >> customer_id;	
+					} while(cin.fail());
+					rentals.print_rented_details(customer_id);
+					break;
+				default: 
+					cout << "Invalid input" << endl;
+
+			}
+			break;
+		case '8':
+			rentals.save_data();
+			return 0;
+		}
+	}
+}
+
+void addVideo(CustomerRentData *rentals)
+{
+	string title;
+	string genre;
+	string prod;
+	string noc;
+	string jpg;
+
+	cout << "Movie Title: ";
+	cin >> ws;
+	getline(cin, title);
+
+	cout << "Genre: ";
+	cin >> ws;
+	cin >> genre;
+
+	cout << "Production: ";
+	cin >> ws;
+	getline(cin, prod);
+
+	cout << "Number of Copies: ";
+	cin >> ws;
+	getline(cin, noc);
+
+	cout << "Movie Image Filename: ";
+	cin >> ws;
+	getline(cin, jpg);
+
+	rentals -> newVid(title, genre, prod, noc, jpg);
+
+}
+
+void addCustomer(CustomerRentData *rentals) {
+	string name;
+	string address;;
+	cout << "Enter name: ";
+	getline(cin, name);
+	cout << "Enter address: ";
+	getline(cin, address);
+	rentals -> add_customer(name, address);
+}

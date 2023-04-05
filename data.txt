@@ -1,0 +1,71 @@
+#include<string>
+#include<list>
+class VideoData
+{
+private:
+	struct VidNode
+	{
+		int video_id;
+		std::string video_title;
+		std::string video_genre;
+		std::string video_producer;
+		std::string video_copies;
+		std::string video_location;
+	};
+	int id = 1;
+public:
+	std::list<VidNode> videoList;
+	VideoData();
+	~VideoData();
+
+
+
+	void newVid(std::string title, std::string genre, std::string prod, std::string noc, std::string jpg);
+	bool showVid(int id);
+
+	void dispVid();
+	bool checkVid(int id);
+};
+
+class CustomerData
+{
+private:
+	struct Customer {
+		int customer_id;
+		std::string customer_name;
+		std::string customer_address;
+	};
+	int id = 1;
+public:
+	std::list<Customer> customerList;
+	CustomerData();
+	~CustomerData();
+	void add_customer(std::string name, std::string address);
+	bool show_customer_details(int id);
+	void print_customers();
+
+};
+
+class CustomerRentData : public CustomerData, public VideoData
+{
+private:
+	struct CustomerRent {
+		int customer_id;
+		int video_id;
+		std::string video_title;
+		std::string video_genre;
+		std::string video_producer;
+		std::string video_location;
+	};
+	std::list<CustomerRent> rentList;
+public:
+	CustomerRentData();
+	~CustomerRentData();
+	void rent_video(int customer_id, int video_id);
+	void return_video(int customer_id, int video_id);
+	void print_rented_details(int id);
+	void save_data();
+	void load_data();
+};
+
+
